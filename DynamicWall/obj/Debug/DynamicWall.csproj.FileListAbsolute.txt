@@ -1,0 +1,10 @@
+D:\GitFolder\DynamicWall\DynamicWall\bin\Debug\DynamicWall.exe.config
+D:\GitFolder\DynamicWall\DynamicWall\bin\Debug\DynamicWall.exe
+D:\GitFolder\DynamicWall\DynamicWall\bin\Debug\DynamicWall.pdb
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.csproj.AssemblyReference.cache
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.Form1.resources
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.Properties.Resources.resources
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.csproj.GenerateResource.cache
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.csproj.CoreCompileInputs.cache
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.exe
+D:\GitFolder\DynamicWall\DynamicWall\obj\Debug\DynamicWall.pdb
