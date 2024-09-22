@@ -121,7 +121,7 @@ namespace DynamicWall
 
             currentImageIndex = startIndex;
 
-            changeDelaySecond /= (360 * 3 * 5);
+            //changeDelaySecond /= (360 * 3 * 5);
 
             string wallpaperPath = imageFiles[currentImageIndex];
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, wallpaperPath, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);

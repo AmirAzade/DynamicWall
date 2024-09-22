@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -7,7 +8,10 @@ namespace DynamicWall
 {
     public partial class Form1 : Form
     {
-        private ImageList imageList; // To hold images for the ListView
+        string filePath = "last_files.txt";
+        string[] filePaths;
+
+        private ImageList imageList;
 
         public Form1()
         {
@@ -18,13 +22,38 @@ namespace DynamicWall
         private void InitializeImageList()
         {
             imageList = new ImageList();
-            imageList.ImageSize = new Size(150, 100); // Set the size for the images in the ListView
-            listView1.LargeImageList = imageList; // Assign the ImageList to the ListView
+            imageList.ImageSize = new Size(150, 100);
+            listView1.LargeImageList = imageList;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             updateStatus();
+
+            filePaths = LoadList();
+
+            listView1.Items.Clear();
+            imageList.Images.Clear();
+
+            foreach (string fileName in filePaths)
+            {
+                Image image = Image.FromFile(fileName);
+
+                imageList.Images.Add(image);
+                ListViewItem item = new ListViewItem(Path.GetFileName(fileName))
+                {
+                    ImageIndex = imageList.Images.Count - 1,
+                    Tag = fileName
+                };
+                listView1.Items.Add(item);
+            }
+
+            DynamicWallpaper.changePrpos(filePaths);
+
+            if(Properties.Settings.Default.runing)
+            {
+                startButton_Click(this, EventArgs.Empty);
+            }
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -50,12 +79,16 @@ namespace DynamicWall
             {
                 DynamicWallpaper.wallpaperTimer.Stop();
                 DynamicWallpaper.isTimerRunning = false;
+                Properties.Settings.Default.runing = false;
+                Properties.Settings.Default.Save();
             }
             else
             {
                 DynamicWallpaper.Initialize();
                 DynamicWallpaper.wallpaperTimer.Start();
                 DynamicWallpaper.isTimerRunning = true;
+                Properties.Settings.Default.runing = true;
+                Properties.Settings.Default.Save();
             }
             updateStatus();
         }
@@ -66,7 +99,7 @@ namespace DynamicWall
             startButton.Text = (DynamicWallpaper.isTimerRunning) ? "Stop" : "Start";
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void BrowsButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -80,24 +113,26 @@ namespace DynamicWall
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var filePaths = openFileDialog.FileNames;
+                filePaths = openFileDialog.FileNames;
                 listView1.Items.Clear();
-                imageList.Images.Clear(); // Clear previous images
+                imageList.Images.Clear();
 
                 foreach (string fileName in filePaths)
                 {
                     Image image = Image.FromFile(fileName);
 
-                    imageList.Images.Add(image); // Add the image to the ImageList
+                    imageList.Images.Add(image);
                     ListViewItem item = new ListViewItem(Path.GetFileName(fileName))
                     {
-                        ImageIndex = imageList.Images.Count - 1, // Use the index of the added image
+                        ImageIndex = imageList.Images.Count - 1,
                         Tag = fileName
                     };
                     listView1.Items.Add(item);
                 }
 
                 DynamicWallpaper.changePrpos(filePaths);
+
+                SaveList(filePaths);
             }
         }
 
@@ -108,6 +143,35 @@ namespace DynamicWall
                 string filePath = listView1.SelectedItems[0].Tag.ToString();
                 pictureBox1.BackgroundImage = Image.FromFile(filePath);
             }
+        }
+
+        private void SaveList(string[] stringList)
+        {
+            try
+            {
+                File.WriteAllLines(filePath, stringList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving the list: " + ex.Message);
+            }
+        }
+
+        private string[] LoadList()
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    return File.ReadAllLines(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading the list: " + ex.Message);
+            }
+
+            return null;
         }
 
     }
